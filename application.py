@@ -24,15 +24,22 @@ db = scoped_session(sessionmaker(bind=engine))
 
 @app.route("/")
 def index():
-    return render_template("user_template.html")
+    return render_template("homepage.html")
 
 @app.route("/login_requests", methods=["POST"])
 def process_login_request():
     username = request.form.get("username")
-    password = request.form.get("password")
+    password = hash(request.form.get("password"))
 
-    print(username)
-    print(password)
+    user = db.execute("SELECT * FROM users WHERE username = :username", {"username":username}).fetchone()
+
+    if user is None:
+        return render_template("login.html", has_error=True, error="User does not exist")
+    elif int(user["password"]) != int(password):
+        return render_template("login.html", has_error=True, error="Incorrect password")
+    else:
+        session["user"] = user
+        return redirect("/dashboard")
 
     return redirect("/")
 
@@ -51,13 +58,14 @@ def process_register_request():
     
     # Check to see if user already exists
     old_user = db.execute("SELECT * FROM users WHERE username = :username", {"username":username}).fetchone()
-    if not user is None:
+    if not old_user is None:
         return render_template("register.html", has_error=True, error="That username is already taken")
 
     hashed = hash(password)
     db.execute("INSERT INTO users (username, password) VALUES (:username, :password)", {"username":username, "password":hashed})
     db.commit()
-    session["username"] = username
+    user = db.execute("SELECT * FROM users WHERE username = :username", {"username":username}).fetchone()
+    session["user"] = user
     return redirect("/dashboard")
 
 @app.route("/login")
@@ -70,7 +78,12 @@ def register():
 
 @app.route("/dashboard")
 def dashboard():
-    return "dashboard"
+    return render_template("dashboard.html", username=session["user"]["username"], classes=session["user"]["classes"])
+
+@app.route("/logout")
+def logout():
+    session["username"] = None
+    return redirect("/")
 
 @app.route("/termsofservice")
 def tos():
