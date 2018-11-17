@@ -1,0 +1,21 @@
+{% extends "user_template.html" %}
+
+{% block body %}
+<div class="container">
+	<h3>Welcome, {{username}}</h3>
+	<br>
+	{% if classes %}
+	{% for class in classes %}
+	<div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+				<h5 class="card-title">{{class["name"]}}</h5>
+				<p class="card-text">{{class["code"]}}</p>
+				<a href="{{class["link"]}}" class="btn btn-primary">View</a>
+      </div>
+    </div>
+	</div>
+	{% endfor %}
+	{% endif %}
+</div>
+{% endblock %}
