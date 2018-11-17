@@ -20,9 +20,9 @@ Session(app)
 engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/")
 def index() :
-    return render_template("index.html")
+    return render_template("anon_template.html")
 
 if __name__ == "__main__":
     threading.Thread(target=app.run).start()
