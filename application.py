@@ -1,4 +1,4 @@
-import os, urllib.parse, requests, json
+import os, requests, json
 
 from flask import Flask, session, render_template, request, redirect, abort
 from flask_session import Session
@@ -27,13 +27,15 @@ def only_anon(f):
 def add_class_to_user(session, class_id):
     user = db.execute("SELECT * FROM users WHERE username = :username", {"username":session["user"]["username"]}).fetchone()
     session["user"] = user
-    print(session["user"]["classes"])
+    class_id = "{" + str(class_id) + "}"
     if session["user"]["classes"] is None:
-        new_user_classes = [class_id]
+        db.execute("UPDATE users SET classes = :class_id  WHERE username = :username", {"username":session["user"]["username"], "class_id":class_id})
     else:
-        new_user_classes = session["user"]["classes"] + [class_id]
-    db.execute("UPDATE users SET classes = :new_user_classes WHERE username = :username", {"new_user_classes":new_user_classes, "username":session["user"]["username"]})
+        print("okay" + class_id)
+        db.execute("UPDATE users SET classes = array_cat(classes, :class_id) WHERE username = :username", {"username":session["user"]["username"], "class_id":class_id})
     db.commit()
+    user = db.execute("SELECT * FROM users WHERE username = :username", {"username":session["user"]["username"]}).fetchone()
+    session["user"] = user
 
 
 app = Flask(__name__)
@@ -107,7 +109,19 @@ def register():
 
 @app.route("/dashboard")
 def dashboard():
-    return render_template("dashboard.html", username=session["user"]["username"], classes=session["user"]["classes"])
+    dashboard_classes = []
+    already_used = []
+    if session["user"]["classes"]:
+        for class_id in set(session["user"]["classes"]):
+            if class_id in already_used:
+                break
+            class_found = db.execute("SELECT * FROM classes WHERE class_id = :class_id", {"class_id":class_id})
+            dashboard_classes += class_found
+            already_used += [class_id]
+
+        print(dashboard_classes)
+
+    return render_template("dashboard.html", username=session["user"]["username"], classes=dashboard_classes)
 
 @app.route("/add_class", methods=["GET", "POST"])
 def add_class():
@@ -131,7 +145,6 @@ def create_class():
         name = request.form.get("class-name")
         # TODO fix this to avoid collisions
         class_id = hash(subject + name)
-
         db.execute("INSERT INTO classes (subject, class_name, class_id) VALUES (:subject, :class_name, :class_id)", {"subject":subject, "class_name":name, "class_id":class_id})
         db.commit()
         add_class_to_user(session, class_id)
