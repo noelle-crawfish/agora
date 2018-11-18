@@ -1,4 +1,4 @@
-# Our project for SMHacks II
+# Our project for SMHacks II, Agora
 
 # In order to run this project, you need to set some environment variables
 - PYTHONHASHSEED=0
