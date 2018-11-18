@@ -134,19 +134,19 @@ def school_selection():
         return render_template("school.html", schools=schools)
     elif request.method == "POST":
         if request.form.get("secret") == "selected":
-            print("sel")
-            school = request.form.get("school_selector")
+            school = request.form.get("school-selector")
+            print(school)
             db.execute("UPDATE users SET school = :school WHERE username = :username", {"school":school, "username":session["user"]["username"]})
             db.commit()
         else:
-            print("new")
             school = request.form.get("new-school")
             db.execute("INSERT INTO schools (school_name) VALUES (:school)", {"school":school})
             db.execute("UPDATE users SET school = :school WHERE username = :username", {"school":school, "username":session["user"]["username"]})
             db.commit()
         user = db.execute("SELECT * FROM users WHERE username = :username", {"username":session["user"]["username"]}).fetchone()
         session["user"] = user
-        return redirect("forum")
+        print(user)
+        return redirect("/forum")
 
 @app.route("/forum")
 @login_required
