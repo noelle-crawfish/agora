@@ -12,11 +12,21 @@
 		<div class="jumbotron">
 			<h3 class="display-4">{{problem_selected["title"]}}</h1>
 			<p class="lead">{{problem_selected["question"]}}</p>
+			<p>Answer: </p>
+			<form action="{{check_answer_link}}" method="post">
+				<div class="form-group">
+					<input class="form-control" type="text" name="user-answer" id="user-answer" placeholder="Answer">
+				</div>
+				<button role="submit" class="btn btn-primary">Check</button>
+				{% if wrong %}
+				<small class="form-text text-muted">Oops... Try agian.</small>
+				{% endif %}
+			</form>
 			<hr class="my-4">			
-			<p>Answer: {{problem_selected["answer"]}}</p>
 			{% if problem_selected["hints"] %}
 				{% for hint in problem_selected["hints"] %}
 					<p>{{hint}}</p>
+					<hr class="my-4">
 				{% endfor %}
 			{% endif %}
 		</div>

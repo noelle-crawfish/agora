@@ -1,0 +1,12 @@
+{% extends "user_template.html" %}
+
+{% block body %}
+<form action="{{link}}" method="post" style="margin:3%;">
+	<div class="form-group">
+		<label for="hint">Type your hint below</label>
+		<textarea class="form-control" id="hint" name="hint" placeholder="Lorum ispum dolor..."></textarea>
+		<small class="form-text text-muted">Your peers appreciate you :)</small>
+	</div>
+	<button role="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endblock %}
