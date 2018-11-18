@@ -205,10 +205,18 @@ def submit_an_answer(class_id, problem_index):
         db.commit()
         return redirect("/class/" + class_id + "/" + problem_index)
 
-@app.route("/submitaproblem/submithint/<class_id>/<problem_index>")
+@app.route("/submitaproblem/submithint/<class_id>/<problem_index>", methods=["POST", "GET"])
 @login_required
 def submit_a_hint(class_id, problem_index):
-    return "oof"
+    if request.method == "GET":
+        link = "/submitaproblem/submithint/" + class_id + "/" + problem_index 
+        return render_template("submit_hint.html", link=link)
+    elif request.method == "POST":
+        new_hint = request.form.get("hint")
+        new_hint = "{" + new_hint + "}"
+        db.execute("UPDATE problems SET hints = array_cat(hints, :new_hint) WHERE index = :problem_index", {"new_hint":new_hint, "problem_index":problem_index})
+        db.commit()
+        return redirect("/class/" + class_id + "/" + problem_index)
 
 @app.route("/logout")
 def logout():
