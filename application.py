@@ -31,12 +31,10 @@ def add_class_to_user(session, class_id):
     if session["user"]["classes"] is None:
         db.execute("UPDATE users SET classes = :class_id  WHERE username = :username", {"username":session["user"]["username"], "class_id":class_id})
     else:
-        print("okay" + class_id)
         db.execute("UPDATE users SET classes = array_cat(classes, :class_id) WHERE username = :username", {"username":session["user"]["username"], "class_id":class_id})
     db.commit()
     user = db.execute("SELECT * FROM users WHERE username = :username", {"username":session["user"]["username"]}).fetchone()
     session["user"] = user
-
 
 app = Flask(__name__)
 
@@ -113,18 +111,14 @@ def register():
 @login_required
 def dashboard():
     dashboard_classes = []
-    already_used = []
+    dash_links = []
     if session["user"]["classes"]:
         for class_id in set(session["user"]["classes"]):
-            if class_id in already_used:
-                break
             class_found = db.execute("SELECT * FROM classes WHERE class_id = :class_id", {"class_id":class_id})
             dashboard_classes += class_found
-            already_used += [class_id]
+            dash_links += ["/class/" + class_id]
 
-        print(dashboard_classes)
-
-    return render_template("dashboard.html", username=session["user"]["username"], classes=dashboard_classes)
+    return render_template("dashboard.html", username=session["user"]["username"], classes=zip(dashboard_classes, dash_links))
 
 @app.route("/add_class", methods=["GET", "POST"])
 @login_required
@@ -158,8 +152,11 @@ def create_class():
 @app.route("/class/<class_id>")
 @login_required
 def class_page(class_id):
-    return "hello"
-
+    class_selected = db.execute("SELECT * FROM classes WHERE class_id = :class_id", {"class_id":class_id})
+    if not class_selected:
+        return redirect("/error")
+    else:
+        return render_template("class_page.html", class_selected=class_selected)
 
 @app.route("/logout")
 def logout():
@@ -169,6 +166,10 @@ def logout():
 @app.route("/termsofservice")
 def tos():
     return "They don't exist just please don't sue us."
+
+@app.route("/error")
+def error():
+    return render_template("error.html")
 
 if __name__ == "__main__":
     threading.Thread(target=app.run).start()
