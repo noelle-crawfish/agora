@@ -157,7 +157,28 @@ def class_page(class_id):
         return redirect("/error")
     else:
         link = "/submitaproblem/" + class_id
-        return render_template("class_page.html", class_selected=class_dict, link=link)
+        problem_links=[]
+        problems = db.execute("SELECT * FROM problems WHERE class_id = :class_id", {"class_id":class_id}).fetchall()
+        for problem in problems:
+            problem_links += ["/class/" + str(class_id) + "/" + str(problem["index"])]
+        return render_template("class_page.html", class_selected=class_dict, link=link, problems=zip(problems, problem_links))
+
+@app.route("/class/<class_id>/<problem_index>")
+@login_required
+def problem_view(class_id, problem_index):
+    class_dict = db.execute("SELECT * FROM classes WHERE class_id = :class_id", {"class_id":class_id}).fetchone()
+    problem_selected = db.execute("SELECT * FROM problems WHERE index = :problem_index", {"problem_index":problem_index}).fetchone()
+    if not problem_selected or not problem_selected["class_id"] == class_id:
+        return redirect("/error")
+    else:
+        link = "/submitaproblem/" + class_id
+        problem_links=[]
+        problems = db.execute("SELECT * FROM problems WHERE class_id = :class_id", {"class_id":class_id}).fetchall()
+        for problem in problems:
+            problem_links += ["/class/" + str(class_id) + "/" + str(problem["index"])]
+        return render_template("problem_selected.html", class_selected=class_dict, link=link, problem_selected=problem_selected)
+
+
 
 @app.route("/submitaproblem/<class_id>", methods=["POST", "GET"])
 @login_required
@@ -165,7 +186,11 @@ def submit_a_problem(class_id):
     if request.method == "GET":
         return render_template("submit_a_problem.html")
     elif request.method == "POST":
-        return "submitting"
+        problem_title = request.form.get("title")
+        problem_text = request.form.get("problem-text")
+        db.execute("INSERT INTO problems (title, question, class_id) VALUES (:title, :question, :class_id)", {"title":problem_title, "question":problem_text, "class_id":class_id})
+        db.commit()
+        return redirect("/class/" + class_id)
 
 @app.route("/logout")
 def logout():
