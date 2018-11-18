@@ -7,16 +7,14 @@
 		<p>Your class code is {{class_selected["class_id"]}}.</p>
 		<a href="{{link}}" class="btn btn-primary">Submit a Problem</a>
 	</div>
-	<div id="problem-list">
+	<div id="problem-list" style="margin:3% !important;">
 		<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
 		<ul class="list-group">
-			{% for question in problems %}
-				<li class="list-group-item"><a href="#">{{question["title"]}}</a></li>
+			{% for question, qlink in problems %}
+			<li class="list-group-item"><a href="{{qlink}}">{{question["title"]}}</a></li>
 			{% endfor %}
 		</ul>
 	</div>
-	<div id="selected-problem">
-
 	</div>
 </div>
 {% endblock %}

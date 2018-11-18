@@ -1,0 +1,30 @@
+{% extends "user_template.html" %}
+
+{% block body %}
+
+	<div id="header" style="margin:3%;">
+		<h3>Welcome to {{class_selected["class_name"]}}</h3>
+		<p>Your class code is {{class_selected["class_id"]}}.</p>
+		<a href="{{link}}" class="btn btn-primary">Submit a Problem</a>
+	</div>
+	<br>
+	<div id="selected-problem" style="margin:3%;">
+		{% if problem_selected %}
+		<div class="jumbotron">
+			<h3 class="display-4">{{problem_selected["title"]}}</h1>
+			<p class="lead">{{problem_selected["question"]}}</p>
+			<hr class="my-4">
+			
+			{% if problem_selected["hints"] %}
+				{% for hint in problem_selected["hints"] %}
+					<p>{{hint}}</p>
+				{% endfor %}
+			{% endif %}
+
+		</div>
+	</div>
+
+		{% endif %}
+
+
+{% endblock %}
