@@ -14,7 +14,8 @@
 - HTML and CSS (bootstrap and top hat themes)
 - Python (flask, jinja2)
 - postgresql (hosted on heroku)
+- the wolfram alpha api
 - coffee (lots)
 
-# Whats the point?
+# What's the point?
 We noticed that on a daily basis, we find ourselves drowning in an endless sea of messages, trying to get the answer to that one problem that makes 0 sense. Agora aims to change this by creating a streamlined method of communication, and an easy way to check your work.
