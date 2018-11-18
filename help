@@ -1,0 +1,10 @@
+import wolframalpha
+
+input = raw_input("Question: ")
+app_id = "JGH5WQ-TUAEV87672"
+client = wolframalpha.Client(app_id)
+
+res = client.query(input)
+answer = next(res.results).text
+
+print answer
