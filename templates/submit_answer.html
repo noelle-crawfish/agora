@@ -1,0 +1,12 @@
+{% extends "user_template.html" %}
+
+{% block body %}
+<form action="{{link}}" method="post" id="answer" name="answer" style="margin:3%;">
+	<div class="form-group">
+		<label for="answer-text">Input your answer here.</label>
+		<input type="text" class="form-control" id="answer-text" name="answer-text">
+		<small class="form-text text-muted">Please be 100% sure your answer is correct before submitting. This action CANNOT be undone.</small>
+	</div>
+	<button role="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endblock %}
