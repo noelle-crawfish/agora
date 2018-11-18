@@ -19,7 +19,7 @@ def login_required(f):
 def only_anon(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if not "user" in session.keys() or not session.get("user") is None:
+        if "user" in session.keys() and not session.get("user") is None:
             return redirect("/dashboard")
         return f(*args, **kwargs)
     return decorated_function
@@ -100,14 +100,17 @@ def process_register_request():
     return redirect("/dashboard")
 
 @app.route("/login")
+@only_anon
 def login():
     return render_template("login.html")
 
 @app.route("/register")
+@only_anon
 def register():
     return render_template("register.html")
 
 @app.route("/dashboard")
+@login_required
 def dashboard():
     dashboard_classes = []
     already_used = []
@@ -124,6 +127,7 @@ def dashboard():
     return render_template("dashboard.html", username=session["user"]["username"], classes=dashboard_classes)
 
 @app.route("/add_class", methods=["GET", "POST"])
+@login_required
 def add_class():
     if request.method == "GET":
         return render_template("add_class.html")
@@ -137,6 +141,7 @@ def add_class():
             return render_template("add_class.html", success=True)
 
 @app.route("/create_class", methods=["GET", "POST"])
+@login_required
 def create_class():
     if request.method == "GET":
         return render_template("create_class.html")
@@ -149,6 +154,11 @@ def create_class():
         db.commit()
         add_class_to_user(session, class_id)
         return redirect("/dashboard")
+
+@app.route("/class/<class_id>")
+@login_required
+def class_page(class_id):
+    return "hello"
 
 
 @app.route("/logout")
