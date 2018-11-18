@@ -4,8 +4,37 @@ from flask import Flask, session, render_template, request, redirect, abort
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
+from functools import wraps
+from flask import g, request, redirect, url_for
 
-from helpers import *
+# Helper functions
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not ("user") in session.keys() or session.get("user") is None:
+            return redirect("/login")
+        return f(*args, **kwargs)
+    return decorated_function
+
+def only_anon(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not "user" in session.keys() or not session.get("user") is None:
+            return redirect("/dashboard")
+        return f(*args, **kwargs)
+    return decorated_function
+
+def add_class_to_user(session, class_id):
+    user = db.execute("SELECT * FROM users WHERE username = :username", {"username":session["user"]["username"]}).fetchone()
+    session["user"] = user
+    print(session["user"]["classes"])
+    if session["user"]["classes"] is None:
+        new_user_classes = [class_id]
+    else:
+        new_user_classes = session["user"]["classes"] + [class_id]
+    db.execute("UPDATE users SET classes = :new_user_classes WHERE username = :username", {"new_user_classes":new_user_classes, "username":session["user"]["username"]})
+    db.commit()
+
 
 app = Flask(__name__)
 
@@ -79,6 +108,35 @@ def register():
 @app.route("/dashboard")
 def dashboard():
     return render_template("dashboard.html", username=session["user"]["username"], classes=session["user"]["classes"])
+
+@app.route("/add_class", methods=["GET", "POST"])
+def add_class():
+    if request.method == "GET":
+        return render_template("add_class.html")
+    elif request.method == "POST":
+        class_id = request.form.get("class-id")
+        to_join = db.execute("SELECT * FROM DATABASE WHERE class_id = :class_id", {"class_id":class_id})
+        if to_join is None:
+            return render_template("add_class.html", has_error=True, error="Class does not exist")
+        else:
+            add_class_to_user(session, class_id)
+            return render_template("add_class.html", success=True)
+
+@app.route("/create_class", methods=["GET", "POST"])
+def create_class():
+    if request.method == "GET":
+        return render_template("create_class.html")
+    elif request.method == "POST":
+        subject = request.form.get("subject")
+        name = request.form.get("class-name")
+        # TODO fix this to avoid collisions
+        class_id = hash(subject + name)
+
+        db.execute("INSERT INTO classes (subject, class_name, class_id) VALUES (:subject, :class_name, :class_id)", {"subject":subject, "class_name":name, "class_id":class_id})
+        db.commit()
+        add_class_to_user(session, class_id)
+        return redirect("/dashboard")
+
 
 @app.route("/logout")
 def logout():
