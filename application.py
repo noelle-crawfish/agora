@@ -115,7 +115,7 @@ def add_class():
         return render_template("add_class.html")
     elif request.method == "POST":
         class_id = request.form.get("class-id")
-        to_join = db.execute("SELECT * FROM DATABASE WHERE class_id = :class_id", {"class_id":class_id})
+        to_join = db.execute("SELECT * FROM classes WHERE class_id = :class_id", {"class_id":class_id})
         if to_join is None:
             return render_template("add_class.html", has_error=True, error="Class does not exist")
         else:
