@@ -5,13 +5,13 @@
 	<h3>Welcome, {{username}}</h3>
 	<br>
 	{% if classes %}
-	{% for class in classes %}
+	{% for class, link in classes %}
 	<div class="col-sm-6">
     <div class="card">
       <div class="card-body">
 				<h5 class="card-title">{{class["class_name"]}}</h5>
-				<p class="card-text">{{class["class_id"]}}</p>
-				<a href="{{class["link"]}}" class="btn btn-primary">View</a>
+				<p class="card-text">{{class["subject"]}}</p>
+				<a href="{{link}}" class="btn btn-primary">View</a>
       </div>
     </div>
 	</div>

@@ -2,10 +2,21 @@
 
 {% block body %}
 <div class="container" style="margin:3%;">
-	<h3>{{class["class_name"]}}</h3>
+	<div id="header">
+		<h3>Welcome to {{class_selected["class_name"]}}</h3>
+		<p>Your class code is {{class_selected["class_id"]}}.</p>
+		<a href="{{link}}" class="btn btn-primary">Submit a Problem</a>
+	</div>
+	<div id="problem-list">
+		<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+		<ul class="list-group">
+			{% for question in problems %}
+				<li class="list-group-item"><a href="#">{{question["title"]}}</a></li>
+			{% endfor %}
+		</ul>
+	</div>
+	<div id="selected-problem">
 
-	{% for question in problems %}
-		
-	{% endfor %}
+	</div>
 </div>
 {% endblock %}
