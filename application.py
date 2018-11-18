@@ -172,13 +172,14 @@ def problem_view(class_id, problem_index):
         return redirect("/error")
     else:
         link = "/submitaproblem/" + class_id
-        problem_links=[]
-        problems = db.execute("SELECT * FROM problems WHERE class_id = :class_id", {"class_id":class_id}).fetchall()
-        for problem in problems:
-            problem_links += ["/class/" + str(class_id) + "/" + str(problem["index"])]
-        return render_template("problem_selected.html", class_selected=class_dict, link=link, problem_selected=problem_selected)
+        submit_hint_link = "/submitaproblem/submithint/" + class_id + "/" + problem_index 
+        submit_answer_link = "/submitaproblem/submitanswer/" + class_id + "/" + problem_index
+        if problem_selected["answer"] is None:
+            needs_answer = True
+        else:
+            needs_answer = False
 
-
+        return render_template("problem_selected.html", class_selected=class_dict, link=link, problem_selected=problem_selected, needs_answer=needs_answer, submit_hint_link=submit_hint_link, submit_answer_link=submit_answer_link)
 
 @app.route("/submitaproblem/<class_id>", methods=["POST", "GET"])
 @login_required
@@ -191,6 +192,23 @@ def submit_a_problem(class_id):
         db.execute("INSERT INTO problems (title, question, class_id) VALUES (:title, :question, :class_id)", {"title":problem_title, "question":problem_text, "class_id":class_id})
         db.commit()
         return redirect("/class/" + class_id)
+
+@app.route("/submitaproblem/submitanswer/<class_id>/<problem_index>", methods=["POST", "GET"])
+@login_required
+def submit_an_answer(class_id, problem_index):
+    if request.method == "GET":
+        link = "/submitaproblem/submitanswer/" + class_id + "/" + problem_index
+        return render_template("submit_answer.html", link=link)
+    elif request.method == "POST":
+        answer = request.form.get("answer-text")
+        db.execute("UPDATE problems SET answer = :answer WHERE index = :problem_index", {"answer":answer, "problem_index":problem_index})
+        db.commit()
+        return redirect("/class/" + class_id + "/" + problem_index)
+
+@app.route("/submitaproblem/submithint/<class_id>/<problem_index>")
+@login_required
+def submit_a_hint(class_id, problem_index):
+    return "oof"
 
 @app.route("/logout")
 def logout():
