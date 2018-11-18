@@ -24,6 +24,22 @@ def only_anon(f):
         return f(*args, **kwargs)
     return decorated_function
 
+def has_school(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not ("user") in session.keys() or session["user"]["school"] is None:
+            return redirect("/school")
+        return f(*args, **kwargs)
+    return decorated_function
+
+def no_school(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if ("user") in session.keys() and not session["user"]["school"] is None:
+            return redirect("/forum")
+        return f(*args, **kwargs)
+    return decorated_function
+
 def add_class_to_user(session, class_id):
     user = db.execute("SELECT * FROM users WHERE username = :username", {"username":session["user"]["username"]}).fetchone()
     session["user"] = user
@@ -109,12 +125,42 @@ def register():
 
 @app.route("/school", methods=["GET", "POST"])
 @login_required
+@no_school
 def school_selection():
     if request.method == "GET":
         schools = db.execute("SELECT * FROM schools").fetchall()
         return render_template("school.html", schools=schools)
     elif request.method == "POST":
+        if request.form.get("secret") == "selected":
+            print("sel")
+            school = request.form.get("school_selector")
+            db.execute("UPDATE users SET school = :school WHERE username = :username", {"school":school, "username":session["user"]["username"]})
+            db.commit()
+        else:
+            print("new")
+            school = request.form.get("new-school")
+            db.execute("INSERT INTO schools (school_name) VALUES (:school)", {"school":school})
+            db.execute("UPDATE users SET school = :school WHERE username = :username", {"school":school, "username":session["user"]["username"]})
+            db.commit()
+        user = db.execute("SELECT * FROM users WHERE username = :username", {"username":session["user"]["username"]}).fetchone()
+        session["user"] = user
+        return redirect("forum")
 
+@app.route("/forum")
+@login_required
+@has_school
+def forum():
+    school = session["user"]["school"]
+    link = "/submitmessage/" + school 
+    messages = db.execute("SELECT * FROM messages WHERE school = :school ORDER BY index DESC", {"school":school}).fetchall()
+    return render_template("forum.html", submit_to=link, messages=messages)
+
+@app.route("/submitmessage/<school>", methods=["POST"])
+def submit_message(school):
+    contents = request.form.get("contents")
+    db.execute("INSERT INTO messages (author, contents, school) VALUES (:author, :contents, :school)", {"author":session["user"]["username"], "contents":contents, "school":session["user"]["school"]})
+    db.commit()
+    return redirect("/forum")
 
 @app.route("/dashboard")
 @login_required
@@ -167,7 +213,7 @@ def class_page(class_id):
     else:
         link = "/submitaproblem/" + class_id
         problem_links=[]
-        problems = db.execute("SELECT * FROM problems WHERE class_id = :class_id", {"class_id":class_id}).fetchall()
+        problems = db.execute("SELECT * FROM problems WHERE class_id = :class_id ORDER BY index DESC", {"class_id":class_id}).fetchall()
         for problem in problems:
             problem_links += ["/class/" + str(class_id) + "/" + str(problem["index"])]
         return render_template("class_page.html", class_selected=class_dict, link=link, problems=zip(problems, problem_links))
@@ -181,14 +227,16 @@ def problem_view(class_id, problem_index):
         return redirect("/error")
     else:
         link = "/submitaproblem/" + class_id
+        check_answer_link = "/checkanswer/" + class_id + "/" + problem_index
         submit_hint_link = "/submitaproblem/submithint/" + class_id + "/" + problem_index 
         submit_answer_link = "/submitaproblem/submitanswer/" + class_id + "/" + problem_index
+        session["wrong"] = False
         if problem_selected["answer"] is None:
             needs_answer = True
         else:
             needs_answer = False
 
-        return render_template("problem_selected.html", class_selected=class_dict, link=link, problem_selected=problem_selected, needs_answer=needs_answer, submit_hint_link=submit_hint_link, submit_answer_link=submit_answer_link)
+        return render_template("problem_selected.html", class_selected=class_dict, link=link, problem_selected=problem_selected, needs_answer=needs_answer, submit_hint_link=submit_hint_link, submit_answer_link=submit_answer_link, check_answer_link=check_answer_link, wrong = session["wrong"])
 
 @app.route("/submitaproblem/<class_id>", methods=["POST", "GET"])
 @login_required
@@ -227,9 +275,21 @@ def submit_a_hint(class_id, problem_index):
         db.commit()
         return redirect("/class/" + class_id + "/" + problem_index)
 
+@app.route("/checkanswer/<class_id>/<problem_index>", methods=["POST"])
+def check_answer(class_id, problem_index):
+    user_answer = request.form.get("user-answer")
+    answer = db.execute("SELECT * FROM problems WHERE index = :problem_index", {"problem_index":problem_index}).fetchone()
+    print(user_answer)
+    print(answer)
+    if user_answer == answer["answer"]:
+        return redirect("/class/" + class_id)
+    else:
+        session["wrong"] = True
+        return redirect("/class/" + class_id + "/" + problem_index)
+
 @app.route("/logout")
 def logout():
-    session["username"] = None
+    session["user"] = None
     return redirect("/")
 
 @app.route("/termsofservice")
