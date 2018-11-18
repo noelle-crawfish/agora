@@ -152,11 +152,20 @@ def create_class():
 @app.route("/class/<class_id>")
 @login_required
 def class_page(class_id):
-    class_selected = db.execute("SELECT * FROM classes WHERE class_id = :class_id", {"class_id":class_id})
-    if not class_selected:
+    class_dict = db.execute("SELECT * FROM classes WHERE class_id = :class_id", {"class_id":class_id}).fetchone()
+    if not class_dict:
         return redirect("/error")
     else:
-        return render_template("class_page.html", class_selected=class_selected)
+        link = "/submitaproblem/" + class_id
+        return render_template("class_page.html", class_selected=class_dict, link=link)
+
+@app.route("/submitaproblem/<class_id>", methods=["POST", "GET"])
+@login_required
+def submit_a_problem(class_id):
+    if request.method == "GET":
+        return render_template("submit_a_problem.html")
+    elif request.method == "POST":
+        return "submitting"
 
 @app.route("/logout")
 def logout():
