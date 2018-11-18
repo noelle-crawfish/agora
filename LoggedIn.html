@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+
+    <style>
+      * {box-sizing: border-box}
+
+      h1 {
+        font-size: 30px;
+        text-align: center;
+      }
+
+      body, html {
+          height: 100%;
+          margin: 0;
+          font-family: Raleway;
+      }
+
+      .tablink {
+          background-color: #C0C0C0;
+          color: white;
+          float: left;
+          border: none;
+          outline: none;
+          cursor: pointer;
+          padding: 14px 16px;
+          font-size: 17px;
+          width: 25%;
+          font-family: Raleway;
+      }
+
+      .tablink:hover {
+          background-color: #000;
+      }
+
+      .tabs {
+          color: white;
+          display: none;
+          padding: 100px 20px;
+          height: 100%;
+      }
+      div{
+        height: 300px;
+      }
+
+      #Dashboard {background-color: #99004d;}
+      #Forum {background-color: #bf0060;}
+      #AddClass {background-color: #ee4073;}
+      #Logout {background-color: #ff7abc;}
+    </style>
+  </head>
+<body>
+
+  <button class="tablink" onclick="changeTab('Dashboard', this, 'grey')"id="defaultOpen">Dashboard</button>
+  <button class="tablink" onclick="changeTab('Forum', this, 'grey')">Forum</button>
+  <button class="tablink" onclick="changeTab('AddClass', this, 'grey')">Add Class</button>
+  <button class="tablink" onclick="">Log Out</button>
+
+  <div id="Dashboard" class="tabs">
+    <div height="70%">
+    <h1>Dashboard</h1>
+    
+  </div>
+  </div>
+
+  <div id="Forum" class="tabs">
+    <div height="70%">
+    <h1>Forum</h1>
+  </div>
+
+  </div>
+
+  <div id="AddClass" class="tabs">
+    <div height="70%">
+    <h1>Add Class</h1>
+  </div>
+  </div>
+
+  <div id="Logout" class="tabs">
+    <div height="70%">
+  </div>
+  </div>
+
+    <script>
+      function changeTab(pgNum,element,colorName) {
+          var i, tabcontent, tablinks;
+          tabcontent = document.getElementsByClassName("tabs");
+          for (i = 0; i < tabcontent.length; i++) {
+              tabcontent[i].style.display = "none";
+          }
+          tablinks = document.getElementsByClassName("tablink");
+          for (i = 0; i < tablinks.length; i++) {
+              tablinks[i].style.backgroundColor = "";
+          }
+          document.getElementById(pgNum).style.display = "block";
+          element.style.backgroundColor = colorName;
+
+      }
+      // Get the element with id="defaultOpen" and click on it
+      document.getElementById("defaultOpen").click();
+
+      // Get the modal
+      var template = document.getElementById('id01');
+
+      // When the user clicks anywhere outside of the modal, close it
+      window.onclick = function(event) {
+          if (event.target == template) {
+              template.style.display = "none";
+          }
+      }
+
+    </script>
+
+  </body>
+</html> 
