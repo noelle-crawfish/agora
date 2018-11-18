@@ -107,6 +107,15 @@ def login():
 def register():
     return render_template("register.html")
 
+@app.route("/school", methods=["GET", "POST"])
+@login_required
+def school_selection():
+    if request.method == "GET":
+        schools = db.execute("SELECT * FROM schools").fetchall()
+        return render_template("school.html", schools=schools)
+    elif request.method == "POST":
+
+
 @app.route("/dashboard")
 @login_required
 def dashboard():
