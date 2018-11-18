@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+
+    <style>
+      * {box-sizing: border-box}
+
+      h1 {
+        font-size: 30px;
+        text-align: center;
+      }
+
+      body, html {
+          height: 100%;
+          margin: 0;
+          font-family: Raleway;
+      }
+
+      .tablink {
+          background-color: #C0C0C0;
+          color: white;
+          float: left;
+          border: none;
+          outline: none;
+          cursor: pointer;
+          padding: 14px 16px;
+          font-size: 17px;
+          width: 25%;
+          font-family: Raleway;
+      }
+
+      .tablink:hover {
+          background-color: #000;
+      }
+
+      .tabs {
+          color: white;
+          display: none;
+          padding: 100px 20px;
+          height: 100%;
+      }
+      div{
+        height: 300px;
+      }
+
+      #Home {background-color: #0055FF;}
+      #LogIn {background-color: DodgerBlue;}
+      #SignUp {background-color: DeepSkyBlue;}
+      #About {background-color: #00DEFF;}
+    </style>
+  </head>
+<body>
+
+  <button class="tablink" onclick="changeTab('Home', this, 'grey')"id="defaultOpen">Home</button>
+  <button class="tablink" onclick="changeTab('LogIn', this, 'grey')">Log In</button>
+  <button class="tablink" onclick="changeTab('SignUp', this, 'grey')">Sign Up</button>
+  <button class="tablink" onclick="changeTab('About', this, 'grey')">About</button>
+
+  <div id="Home" class="tabs">
+    <div height="70%">
+    <h1>Home</h1>
+    <center><img src = "agoraLogo.png"></center>
+    <h2>Welcome to Agora!</h2>
+    <p>This is a school forum where you can connect with teachers and peers.</p>
+    <p>If you're looking for homework help, study tips, or just want to chat with other students, Agora is the place to be!</p>
+    <p>Sign up now, it's free!</p>
+  </div>
+  </div>
+
+  <div id="LogIn" class="tabs">
+    <div height="70%">
+    <img src = "agoraLogo.png" width="100" height="75" align="right">
+    <h1>Log In</h1>
+    <p>If you already have an account, sign in here.</p>
+  </div>
+    <center><img src = "pencil.png"></center>
+
+  </div>
+
+  <div id="SignUp" class="tabs">
+    <div height="70%">
+    <img src = "agoraLogo.png" width="100" height="75" align="right">
+    <h1>Sign Up</h1>
+    <p>If you don't have an account, make one here.</p>
+  </div>
+    <center><img src = "pencil.png"></center>
+  </div>
+
+  <div id="About" class="tabs">
+    <div height="70%">
+     <img src = "agoraLogo.png" width="100" height="75" align="right">
+    <h1>About</h1>
+    <h2>Who are we?</h2>
+    <p>This web application was designed by Noelle Crawford, Marley Magee, Claire Pare, and Ashley Tussanee at SM Hacks II.</p>
+    <p>We are all high school students in California. In our spare time we love to code!</p>
+    <h2>What is Agora?</h2>
+    <p>As students, we found that we wanted an outlet to ask for help on homework and communicate with fellow students and teachers. 
+      We came up with the idea of Agora to provide a fun place for students to get help, chat with others, coordinate school activities, and so much more!</p>
+     <p>Enjoy!</p>
+    <p>According to Oxford Dictionary...</p>
+    <p>Agora: 
+      noun, (in ancient Greece) a public open space used for assemblies and markets. </p>
+  </div>
+    <center><img src = "pencil.png"></center>
+  </div>
+
+    <script>
+      function changeTab(pgNum,element,colorName) {
+          var i, tabcontent, tablinks;
+          tabcontent = document.getElementsByClassName("tabs");
+          for (i = 0; i < tabcontent.length; i++) {
+              tabcontent[i].style.display = "none";
+          }
+          tablinks = document.getElementsByClassName("tablink");
+          for (i = 0; i < tablinks.length; i++) {
+              tablinks[i].style.backgroundColor = "";
+          }
+          document.getElementById(pgNum).style.display = "block";
+          element.style.backgroundColor = colorName;
+
+      }
+      // Get the element with id="defaultOpen" and click on it
+      document.getElementById("defaultOpen").click();
+
+      // Get the modal
+      var template = document.getElementById('id01');
+
+      // When the user clicks anywhere outside of the modal, close it
+      window.onclick = function(event) {
+          if (event.target == template) {
+              template.style.display = "none";
+          }
+      }
+
+    </script>
+
+  </body>
+</html> 
