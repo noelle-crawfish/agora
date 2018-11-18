@@ -1,7 +1,7 @@
 {% extends "user_template.html" %}
 
 {% block body %}
-<div class="container">
+<div class="container" style="margin:3%;">
 	<h3>Welcome, {{username}}</h3>
 	<br>
 	{% if classes %}
@@ -9,13 +9,16 @@
 	<div class="col-sm-6">
     <div class="card">
       <div class="card-body">
-				<h5 class="card-title">{{class["name"]}}</h5>
-				<p class="card-text">{{class["code"]}}</p>
+				<h5 class="card-title">{{class["class_name"]}}</h5>
+				<p class="card-text">{{class["class_id"]}}</p>
 				<a href="{{class["link"]}}" class="btn btn-primary">View</a>
       </div>
     </div>
 	</div>
+	<br>
 	{% endfor %}
+	{% else %}
+	<h4>You don't have any classes yet. Add some to get started</h4>
 	{% endif %}
 </div>
 {% endblock %}

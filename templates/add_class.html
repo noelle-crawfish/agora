@@ -1,1 +1,20 @@
 {% extends "user_template.html" %}
+
+{% block body %}
+
+{% if has_error %}
+<div class="alert alert-danger" role="alert" style="margin:3%;">{{error}}.</div>
+{% elif sucess %}
+<div class="alert alert-success" role="alert" style="margin:3%;">Congrats! You've successfully joined your class.</div>
+
+{% endif %}
+
+<form style="margin:3%;" name="add-class" id="add-class">
+  <div class="form-group">
+    <label for="class-id">Class Id</label>
+    <input type="text" class="form-control" name="class-id" id="class-id" placeholder="Enter class id">
+		<small id="help" class="form-text text-muted">If you don't have this, get it from a peer, or <a href="/create_class">create a class</a> instead.</small>
+  </div>
+	<button type="submit" class="btn btn-primary">Join</button>
+</div>
+{% endblock %}
