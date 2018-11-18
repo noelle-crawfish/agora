@@ -7,6 +7,8 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from functools import wraps
 from flask import g, request, redirect, url_for
 
+from wolfram import *
+
 # Helper functions
 def login_required(f):
     @wraps(f)
@@ -231,6 +233,7 @@ def problem_view(class_id, problem_index):
         submit_hint_link = "/submitaproblem/submithint/" + class_id + "/" + problem_index 
         submit_answer_link = "/submitaproblem/submitanswer/" + class_id + "/" + problem_index
         session["wrong"] = False
+        print(problem_selected)
         if problem_selected["answer"] is None:
             needs_answer = True
         else:
@@ -246,7 +249,13 @@ def submit_a_problem(class_id):
     elif request.method == "POST":
         problem_title = request.form.get("title")
         problem_text = request.form.get("problem-text")
-        db.execute("INSERT INTO problems (title, question, class_id) VALUES (:title, :question, :class_id)", {"title":problem_title, "question":problem_text, "class_id":class_id})
+        subject = db.execute("SELECT * FROM classes WHERE class_id = :class_id", {"class_id":class_id}).fetchone()
+        subject = subject["subject"]
+        if subject.lower() == "math":
+            answer = str(get_answer(problem_text))
+            db.execute("INSERT INTO problems (answer, title, question, class_id) VALUES (:answer, :title, :question, :class_id)", {"answer":answer, "title":problem_title, "question":problem_text, "class_id":class_id})
+        else:
+            db.execute("INSERT INTO problems (title, question, class_id) VALUES (:title, :question, :class_id)", {"title":problem_title, "question":problem_text, "class_id":class_id})
         db.commit()
         return redirect("/class/" + class_id)
 
