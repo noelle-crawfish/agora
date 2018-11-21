@@ -135,7 +135,6 @@ def school_selection():
     elif request.method == "POST":
         if request.form.get("secret") == "selected":
             school = request.form.get("school-selector")
-            print(school)
             db.execute("UPDATE users SET school = :school WHERE username = :username", {"school":school, "username":session["user"]["username"]})
             db.commit()
         else:
@@ -145,7 +144,6 @@ def school_selection():
             db.commit()
         user = db.execute("SELECT * FROM users WHERE username = :username", {"username":session["user"]["username"]}).fetchone()
         session["user"] = user
-        print(user)
         return redirect("/forum")
 
 @app.route("/forum")
