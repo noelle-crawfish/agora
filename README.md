@@ -17,6 +17,7 @@ After SM hacks, we are continuing to develop Agora, in hopes of one day publishi
 - HTML and CSS (bootstrap and top hat themes)
 - Python (flask, jinja2)
 - postgresql (hosted on heroku)
+- dart (flutter) - no we didn't use android studio
 - the wolfram alpha api
 - coffee (lots)
 
