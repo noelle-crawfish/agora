@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+		<title>Agora</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+      * {box-sizing: border-box}
+
+      h1 {
+        font-size: 30px;
+        text-align: center;
+      }
+
+      body, html {
+          height: 100%;
+          margin: 0;
+          font-family: Raleway;
+          background-color: #333;
+          color: white;
+      }
+
+      .tablink {
+          
+          color: white;
+					background-color: #333;
+          float: left;
+          border: none;
+          outline: none;
+          cursor: pointer;
+          padding: 14px 16px;
+          font-size: 17px;
+          width: 33.33%;
+      }
+
+      .tablink:hover {
+          background-color: #FF304F;
+      }
+
+      .tabs {
+          color: white;
+          display: none;
+          padding: 100px 20px;
+          height: 100%;
+      }
+      .imagestyle{
+        position: relative;
+        top: -100px;
+      }
+
+      #HomePage {background-color: #333;}
+    </style>
+		<link rel="stylesheet" href="{{url_for('static', filename='styles/bootstrap.css')}}">
+		<link rel="stylesheet" href="{{url_for('static', filename='styles/theme.css')}}">
+  </head>
+<body>
+  <a href="/"><button class="tablink">Home</button></a>
+  <a href="/login"><button class="tablink" >Login</button></a>
+  <a href="/register"><button class="tablink" >Register</button></a>
+	<br>
+	<br>
+		{% block body %}
+		{% endblock %}
+</body>

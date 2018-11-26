@@ -1,0 +1,20 @@
+{% extends "user_template.html" %}
+
+{% block body %}
+<div style="margin:3%;">
+	<form action="{{submit_to}}" method="post">
+		<div class="form-group">
+			<textarea class="form-control" id="contents" name="contents" placeholder="Say something to your peers..."></textarea>
+			<small class="form-text text-muted">Remember to use school appropriate language!</small>
+		</div>
+		<button role="submit" class="btn btn-primary">Send</button>
+	</form>
+	<hr class="my-4">
+	{% for message in messages %}
+	<div class="alert alert-info" role="alert">
+		<h4>{{message["contents"]}}</h4>
+		<p>{{message["author"]}}</p>
+	</div>
+	{% endfor %}
+</div>
+{% endblock %}

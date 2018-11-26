@@ -1,0 +1,25 @@
+{% extends "user_template.html" %}
+
+{% block body %}
+<form action="/school" method="post" style="margin:3%;">
+	<div class="form-group">
+		<label for="school-selector">Select your school from the list...</label>
+		<select class="form-control" id="school-selector" name="school-selector">
+			{% for school in schools %}
+			<option value="{{school["school_name"]}}">{{school["school_name"]}}</option>
+			{% endfor %}
+		</select>
+		<input name="secret" id="secret" type="hidden" value="selected">
+	</div>
+	<button role="submit" class="btn btn-primary">Select</button>
+</form>
+<form style="margin:3%" action="/school" method="post">
+	<div class="form-group">
+		<label for="new-school">Or if it's not there, add it to our database!</label>
+		<input type="text" name="new-school" id="new-school" placeholder="Your school goes here..." class="form-control">
+		<small class="form-text text-muted">You'll be doing your classmates a favor.</small>
+		<input name="secret" id="secret" type="hidden" value="added">
+	</div>
+	<button role="submit" class="btn btn-primary">Add School</button>
+</form>
+{% endblock %}
