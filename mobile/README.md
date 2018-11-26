@@ -1,8 +1,3 @@
-# agora
+# agora mobile
 
-A new Flutter project.
-
-## Getting Started
-
-For help getting started with Flutter, view our online
-[documentation](https://flutter.io/).
+A mobile app in order to make access to agora databases more convienient. Developed using flutter, in order to provide our services to both ios and android.
