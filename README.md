@@ -1,4 +1,4 @@
-# Our project for SMHacks II, Agora a web application on a (theoretical) .tech domain
+# Our project for SMHacks II, Agora is a web application on a (theoretical) .tech domain
 note: while we have applied, for a .tech domain, it has not yet finished processing
 
 # In order to run this project, you need to set some environment variables
