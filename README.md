@@ -1,6 +1,8 @@
 # Our project for SMHacks II, Agora is a web application on a (theoretical) .tech domain
 note: while we have applied, for a .tech domain, it has not yet finished processing
 
+After SM hacks, we are continuing to develop Agora, in hopes of one day publishing the technology
+
 # In order to run this project, you need to set some environment variables
 - PYTHONHASHSEED=0
 - DATABASE_URL=yoururl (we're not giving you ours)
